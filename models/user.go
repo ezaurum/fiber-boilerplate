@@ -2,5 +2,7 @@ package models
 
 // User model
 type User struct {
-	Name string `json:"name"`
+	ID    uint   `json:"id"`
+	Name  string `json:"name"`
+	Posts []Post `json:"posts"`
 }
