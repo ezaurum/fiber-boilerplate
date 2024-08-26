@@ -1,5 +1,5 @@
 # Building the binary of the App
-FROM golang:1.19 AS build
+FROM golang:1.23 AS build
 
 # `boilerplate` should be replaced with your project name
 WORKDIR /go/src/boilerplate
@@ -31,7 +31,7 @@ RUN apk -U upgrade \
     && apk add --no-cache dumb-init ca-certificates \
     && chmod +x /app/app
 
-# Exposes port 3000 because our program listens on that port
-EXPOSE 3000
+# Exposes port 3939 because our program listens on that port
+EXPOSE 3939
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]

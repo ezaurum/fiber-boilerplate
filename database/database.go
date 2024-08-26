@@ -3,26 +3,34 @@ package database
 import (
 	"boilerplate/models"
 	"fmt"
-	"sync"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 var (
-	db []*models.User
-	mu sync.Mutex
+	db *gorm.DB
 )
 
 // Connect with database
 func Connect() {
-	db = make([]*models.User, 0)
+	_db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	if err != nil {
+		panic("failed to connect database")
+	}
+	err = _db.AutoMigrate(&models.User{})
+	if err != nil {
+		panic("failed to migrate database")
+	}
+	db = _db
 	fmt.Println("Connected with Database")
 }
 
 func Insert(user *models.User) {
-	mu.Lock()
-	db = append(db, user)
-	mu.Unlock()
+	db.Create(user)
 }
 
 func Get() []*models.User {
-	return db
+	var users []*models.User
+	db.Find(&users)
+	return users
 }
