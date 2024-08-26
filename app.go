@@ -1,10 +1,9 @@
 package main
 
 import (
+	"boilerplate/configs"
 	"boilerplate/database"
 	"boilerplate/handlers"
-
-	"flag"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
@@ -12,21 +11,15 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 )
 
-var (
-	port = flag.String("port", ":3939", "Port to listen on")
-	prod = flag.Bool("prod", false, "Enable prefork in Production")
-)
-
 func main() {
-	// Parse command-line flags
-	flag.Parse()
+	config := configs.New()
 
 	// Connected with database
 	database.Connect()
 
 	// Create fiber app
 	app := fiber.New(fiber.Config{
-		Prefork: *prod, // go run app.go -prod
+		Prefork: config.GetBool("PREFORK"), // go run app.go -prod
 	})
 
 	// Middleware
@@ -47,5 +40,5 @@ func main() {
 	app.Use(handlers.NotFound)
 
 	// Listen on port 3000
-	log.Fatal(app.Listen(*port)) // go run app.go -port=:3000
+	log.Fatal(app.Listen(config.ListenString())) // go run app.go -port=:3000
 }
