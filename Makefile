@@ -7,8 +7,12 @@ help: ## This help dialog.
 run-local: ## Run the app locally
 	go run app.go
 
+run-local-autoreload: ## Run the app locally with autoreload
+	air -c .air.toml
+
 requirements: ## Generate go.mod & go.sum files
 	go mod tidy
+	go install github.com/air-verse/air@latest
 
 clean-packages: ## Clean packages
 	go clean -modcache

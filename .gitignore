@@ -24,3 +24,6 @@ go.work
 
 # test.db
 test.db
+
+# Output of the go build command
+tmp
