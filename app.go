@@ -1,6 +1,7 @@
 package main
 
 import (
+	"boilerplate/auth"
 	"boilerplate/configs"
 	"boilerplate/database"
 	"boilerplate/handlers"
@@ -15,7 +16,7 @@ func main() {
 	config := configs.New()
 
 	// Connected with database
-	database.Connect()
+	db := database.Connect()
 
 	// Create fiber app
 	app := fiber.New(fiber.Config{
@@ -26,12 +27,14 @@ func main() {
 	app.Use(recover.New())
 	app.Use(logger.New())
 
+	authz := auth.CasbinMiddleware(db)
 	// Create a /api/v1 endpoint
 	v1 := app.Group("/api/v1")
 
 	// Bind handlers
 	v1.Get("/users", handlers.UserList)
 	v1.Post("/users", handlers.UserCreate)
+	v1.Delete("/users", authz.RequiresPermissions([]string{"user:create"}), handlers.UserCreate)
 
 	// Setup static files
 	app.Static("/", "./static/public")

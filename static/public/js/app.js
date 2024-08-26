@@ -16,7 +16,7 @@ const listUsers = async () => {
 	}
 };
 
-$('#add_user').addEventListener('click', async (e) => {
+$('#add-user').addEventListener('click', async (e) => {
 	e.preventDefault();
 	const user = $('#user').value;
 
@@ -39,6 +39,22 @@ $('#add_user').addEventListener('click', async (e) => {
 	container.insertBefore(child, container.firstChild);
 
 	$('#user').value = '';
+});
+
+$('#delete-user').addEventListener('click', async (e) => {
+	e.preventDefault();
+
+	const form = new FormData();
+	form.append('user', "");
+
+	const response = await fetch(API_ENDPOINT, {
+		method: 'DELETE',
+		body: form,
+	});
+
+	await response.json();
+	container.innerHTML = "";
+
 });
 
 document.addEventListener('DOMContentLoaded', listUsers);

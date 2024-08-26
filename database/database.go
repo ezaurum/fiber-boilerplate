@@ -12,7 +12,7 @@ var (
 )
 
 // Connect with database
-func Connect() {
+func Connect() *gorm.DB {
 	_db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
@@ -23,6 +23,7 @@ func Connect() {
 	}
 	db = _db
 	fmt.Println("Connected with Database")
+	return db
 }
 
 func Insert(user *models.User) {
