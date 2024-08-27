@@ -1,7 +1,6 @@
 on:
     push:
         branches:
-            - master
             - main
     pull_request:
 name: Linter
@@ -14,4 +13,5 @@ jobs:
       - name: Run Golint
         uses: reviewdog/action-golangci-lint@v2
         with:
+          go_version: 1.23
           golangci_lint_flags: "--tests=false"
