@@ -10,12 +10,12 @@ import (
 	"gorm.io/gorm"
 )
 
-//go:embed rbac.conf
-var CasbinModel string
+//go:embed rbac.casbin
+var casbinModel string
 
-func NewEnforcer(db *gorm.DB) (*casbin.Enforcer, error) {
+func enforcer(db *gorm.DB) (*casbin.Enforcer, error) {
 	m := model.NewModel()
-	if err := m.LoadModelFromText(CasbinModel); nil != err {
+	if err := m.LoadModelFromText(casbinModel); nil != err {
 		return nil, err
 	}
 	byDB, err := gormadapter.NewAdapterByDB(db)
@@ -32,7 +32,7 @@ func NewEnforcer(db *gorm.DB) (*casbin.Enforcer, error) {
 }
 
 func CasbinMiddleware(db *gorm.DB) *casbinmiddle.Middleware {
-	enforcer, err := NewEnforcer(db)
+	enforcer, err := enforcer(db)
 	if nil != err {
 		log.Fatalf("An error '%s' was not expected when creating a new casbin enforcer", err)
 	}
