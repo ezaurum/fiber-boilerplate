@@ -1,9 +1,8 @@
 # GoFiber Docker Boilerplate
-![Release](https://img.shields.io/github/release/ezaurum/filber-boilerplate.svg)
-![Test](https://github.com/ezaurum/fiber-boilerplate/workflows/Test/badge.svg)
-![Security](https://github.com/ezaurum/fiber-boilerplate/workflows/Security/badge.svg)
-![Linter](https://github.com/ezaurum/fiber-boilerplate/workflows/Linter/badge.svg)
-## Casbin
+[![Release Drafter](https://github.com/ezaurum/fiber-boilerplate/actions/workflows/release-drafter.yml/badge.svg)](https://github.com/ezaurum/fiber-boilerplate/actions/workflows/release-drafter.yml)
+[![Test](https://github.com/ezaurum/fiber-boilerplate/actions/workflows/test.yml/badge.svg)](https://github.com/ezaurum/fiber-boilerplate/actions/workflows/test.yml)
+[![Security](https://github.com/ezaurum/fiber-boilerplate/actions/workflows/security.yml/badge.svg)](https://github.com/ezaurum/fiber-boilerplate/actions/workflows/security.yml)
+[![Linter](https://github.com/ezaurum/fiber-boilerplate/actions/workflows/linter.yml/badge.svg)](https://github.com/ezaurum/fiber-boilerplate/actions/workflows/linter.yml)
 ## Casbin
 ## GORM
 
