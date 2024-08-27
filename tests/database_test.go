@@ -80,7 +80,9 @@ func TestUpdate(t *testing.T) {
 	mock.ExpectExec("^UPDATE `?users`? SET `?name`?=\\? WHERE (.+)$").WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 
-	user := models.User{ID: 1, Name: "Jane Smith"}
+	user := models.User{
+		Model: models.Model{ID: 1},
+		Name:  "Jane Smith"}
 	if err := db.Save(&user).Error; err != nil {
 		t.Fatalf("Failed to update user: %v", err)
 	}
@@ -93,7 +95,9 @@ func TestDelete(t *testing.T) {
 	mock.ExpectExec("^DELETE FROM `?users`? WHERE (.+)$").WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 
-	user := models.User{ID: 1}
+	user := models.User{
+		Model: models.Model{ID: 1},
+	}
 	if err := db.Delete(&user).Error; err != nil {
 		t.Fatalf("Failed to delete user: %v", err)
 	}
