@@ -1,4 +1,9 @@
 # GoFiber Docker Boilerplate
+![Release](https://img.shields.io/github/release/ezaurum/filber-boilerplate.svg)
+![Test](https://github.com/ezaurum/fiber-boilerplate/workflows/Test/badge.svg)
+![Security](https://github.com/ezaurum/fiber-boilerplate/workflows/Security/badge.svg)
+![Linter](https://github.com/ezaurum/fiber-boilerplate/workflows/Linter/badge.svg)
+## Casbin
 ## Casbin
 ## GORM
 
