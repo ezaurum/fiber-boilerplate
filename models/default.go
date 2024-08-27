@@ -2,6 +2,7 @@ package models
 
 import (
 	"github.com/bwmarrin/snowflake"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -23,7 +24,7 @@ type Model struct {
 }
 
 // BeforeCreate 훅 정의
-func (m *Model) BeforeCreate() error {
+func (m *Model) BeforeCreate(*gorm.DB) error {
 	m.ID = node.Generate().Int64()
 	return nil
 }

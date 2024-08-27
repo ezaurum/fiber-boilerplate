@@ -77,7 +77,7 @@ func TestUpdate(t *testing.T) {
 	db, mock := NewMockDB()
 
 	mock.ExpectBegin()
-	mock.ExpectExec("^UPDATE `?users`? SET `?name`?=\\? WHERE (.+)$").WillReturnResult(sqlmock.NewResult(1, 1))
+	mock.ExpectExec("^UPDATE `?users`? SET .*`?name`?=\\? WHERE (.+)$").WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 
 	user := models.User{
