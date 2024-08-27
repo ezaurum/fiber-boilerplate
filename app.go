@@ -5,6 +5,7 @@ import (
 	"boilerplate/configs"
 	"boilerplate/database"
 	"boilerplate/handlers"
+	"github.com/gofiber/contrib/websocket"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
@@ -38,6 +39,9 @@ func main() {
 
 	// Setup static files
 	app.Static("/", "./static/public")
+
+	// websocket
+	app.Get("/ws/:id", websocket.New(handlers.WebSocket))
 
 	// Handle not founds
 	app.Use(handlers.NotFound)

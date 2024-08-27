@@ -9,7 +9,7 @@
 - [ ] Redis session
 - [ ] Session slide
 - [ ] CORS
-- [ ] Websocket
+- [x] Websocket
 - [ ] OpenAPI
 - [x] ID generator
 - [x] Default database model
