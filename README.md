@@ -3,16 +3,16 @@
 ## GORM
 
 ## TODO
-[ ] Excel
-[ ] Remember me with cookie
-[ ] Login with cookie
-[ ] Redis session
-[ ] Session slide
-[ ] CORS
-[ ] Websocket
-[ ] OpenAPI
-[x] ID generator
-[x] Default database model
+- [ ] Excel
+- [ ] Remember me with cookie
+- [ ] Login with cookie
+- [ ] Redis session
+- [ ] Session slide
+- [ ] CORS
+- [ ] Websocket
+- [ ] OpenAPI
+- [x] ID generator
+- [x] Default database model
 
 
 ## Development
