@@ -66,3 +66,19 @@ func WebSocket(c *websocket.Conn) {
 		}
 	}
 }
+
+// UserGet returns a user
+// @Version 3.1
+// @Summary Get a user
+// @Description Get a user
+// @Tags users
+// @Produce json
+// @Param id path int true "User ID"
+// @Success 200 {object} models.User
+// @Router /users/{id} [get]
+func UserGet(ctx *fiber.Ctx) error {
+	var data = make(map[string]interface{})
+	data["id"] = ctx.Params("id")
+	data["name"] = "John Doe"
+	return ctx.JSON(data)
+}

@@ -11,8 +11,9 @@ run-local-autoreload: ## Run the app locally with autoreload
 	air -c .air.toml
 
 requirements: ## Generate go.mod & go.sum files
-	go mod tidy
 	go install github.com/air-verse/air@latest
+	go install github.com/swaggo/swag/cmd/swag@latest
+	go mod tidy
 
 clean-packages: ## Clean packages
 	go clean -modcache

@@ -14,7 +14,7 @@
 - [ ] Session slide
 - [ ] CORS
 - [x] Websocket
-- [ ] OpenAPI
+- [x] OpenAPI
 - [x] ID generator
 - [x] Default database model
 - [ ] workflow -  security go version problem

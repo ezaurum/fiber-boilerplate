@@ -11,6 +11,10 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
+
+	"github.com/gofiber/swagger"
+
+	_ "boilerplate/docs"
 )
 
 func main() {
@@ -36,6 +40,7 @@ func main() {
 	v1.Get("/users", handlers.UserList)
 	v1.Post("/users", handlers.UserCreate)
 	v1.Delete("/users", authz.RequiresPermissions([]string{"user:create"}), handlers.UserCreate)
+	v1.Get("/users/:id", handlers.UserGet)
 
 	// Setup static files
 	app.Static("/", "./static/public")
@@ -43,6 +48,7 @@ func main() {
 	// websocket
 	app.Get("/ws/:id", websocket.New(handlers.WebSocket))
 
+	app.Get("/swagger/*", swagger.HandlerDefault) // default
 	// Handle not founds
 	app.Use(handlers.NotFound)
 

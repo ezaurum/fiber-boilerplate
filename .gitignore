@@ -16,7 +16,7 @@
 *.out
 
 # Dependency directories (remove the comment below to include it)
-# vendor/
+vendor/
 
 # Go workspace file
 go.work
@@ -27,3 +27,4 @@ test.db
 
 # Output of the go build command
 tmp
+out/
