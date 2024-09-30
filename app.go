@@ -6,13 +6,12 @@ import (
 	"boilerplate/database"
 	"boilerplate/handlers"
 	"github.com/gofiber/contrib/websocket"
+	"github.com/gofiber/swagger"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
-
-	"github.com/gofiber/swagger"
 
 	_ "boilerplate/docs"
 )

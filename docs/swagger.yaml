@@ -35,6 +35,8 @@ definitions:
     type: object
 info:
   contact: {}
+  description: Get a user
+  version: "3.1"
 paths:
   /users/{id}:
     get:
@@ -55,4 +57,6 @@ paths:
       summary: Get a user
       tags:
       - users
+produces:
+- application/json
 swagger: "2.0"
