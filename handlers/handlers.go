@@ -3,6 +3,7 @@ package handlers
 import (
 	"boilerplate/database"
 	"boilerplate/models"
+	"github.com/gofiber/fiber/v2/middleware/session"
 	"log"
 
 	"github.com/gofiber/contrib/websocket"
@@ -28,6 +29,8 @@ func UserCreate(c *fiber.Ctx) error {
 		Name: utils.CopyString(c.FormValue("user")),
 	}
 	database.Insert(user)
+
+	c.Locals("session").(*session.Session).Set("user", user)
 
 	return c.JSON(fiber.Map{
 		"success": true,

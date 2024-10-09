@@ -1,0 +1,43 @@
+# 개발용 # 도커 컴포즈로 실행
+# docker-compose -f dev-stack.yml up
+
+networks:
+  fiber-boilerplate:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+          gateway: 172.20.0.1
+
+services:
+  db:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: devp
+      MYSQL_DATABASE: dev
+    ports:
+      - "3306:3306"
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --skip-character-set-client-handshake
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d
+      - ./db:/var/lib/mysql
+    expose:
+      - 3306
+    networks:
+      fiber-boilerplate:
+        ipv4_address: 172.20.0.6
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    expose:
+      - 6379
+    command:
+      - redis-server
+    networks:
+      fiber-boilerplate:
+        ipv4_address: 172.20.0.79

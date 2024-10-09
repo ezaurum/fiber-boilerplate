@@ -10,8 +10,9 @@
 - [ ] Excel
 - [ ] Remember me with cookie
 - [ ] Login with cookie
-- [ ] Redis session
+- [x] Redis session
 - [ ] Session slide
+- [x] CSRF
 - [x] CORS
 - [x] Websocket
 - [x] OpenAPI
@@ -23,6 +24,13 @@
 ## Development
 
 ### Start the application 
+```bash
+go run app.go
+```
+```bash
+make run-local-autoreload
+```
+
 
 
 ```bash
