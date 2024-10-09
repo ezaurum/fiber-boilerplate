@@ -12,6 +12,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
+        "github.com/gofiber/fiber/v2/middleware/cors"
 
 	_ "boilerplate/docs"
 )
@@ -30,6 +31,7 @@ func main() {
 	// Middleware
 	app.Use(recover.New())
 	app.Use(logger.New())
+	app.Use(cors.New())
 
 	authz := auth.CasbinMiddleware(db)
 	// Create a /api/v1 endpoint
