@@ -12,7 +12,7 @@
 - [ ] Login with cookie
 - [ ] Redis session
 - [ ] Session slide
-- [ ] CORS
+- [x] CORS
 - [x] Websocket
 - [x] OpenAPI
 - [x] ID generator
