@@ -43,7 +43,7 @@ func main() {
 
 	// Initialize redis config
 	storage := redis.New(redis.Config{
-		Host:      "localhost",
+		Host:      "172.23.0.79",
 		Port:      6379,
 		Username:  "",
 		Password:  "",

@@ -2,12 +2,12 @@
 # docker-compose -f dev-stack.yml up
 
 networks:
-  fiber-boilerplate:
+  default:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.20.0.0/16
-          gateway: 172.20.0.1
+        - subnet: 172.23.0.0/16
+          gateway: 172.23.0.1
 
 services:
   db:
@@ -27,8 +27,8 @@ services:
     expose:
       - 3306
     networks:
-      fiber-boilerplate:
-        ipv4_address: 172.20.0.6
+      default:
+        ipv4_address: 172.23.0.6
 
   redis:
     image: redis
@@ -39,5 +39,5 @@ services:
     command:
       - redis-server
     networks:
-      fiber-boilerplate:
-        ipv4_address: 172.20.0.79
+      default:
+        ipv4_address: 172.23.0.79
