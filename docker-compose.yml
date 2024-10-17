@@ -25,6 +25,11 @@ services:
     volumes:
       - ./db_data:/var/lib/postgresql/data
     user: "${UID:-1000}:${GID:-1000}"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     expose:
       - 3306
     networks:
@@ -36,6 +41,9 @@ services:
     restart: always
     ports:
       - 8790:8080
+    depends_on:
+      db:
+        condition: service_healthy
     networks:
       default:
         ipv4_address: 172.23.0.8
