@@ -18,8 +18,7 @@
 - [x] OpenAPI
 - [x] ID generator
 - [x] Default database model
-- [ ] workflow -  security go version problem
-- [ ] workflow -  lint go version problem
+- [ ] Authorization
 
 ## Development
 
