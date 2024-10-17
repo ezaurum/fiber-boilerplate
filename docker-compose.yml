@@ -11,29 +11,37 @@ networks:
 
 services:
   db:
-    image: mariadb
+    image: postgres
+    restart: always
+    shm_size: 128mb
     environment:
-      MYSQL_ROOT_PASSWORD: devp
-      MYSQL_DATABASE: dev
-    ports:
-      - "3306:3306"
-    command:
-      - --character-set-server=utf8mb4
-      - --collation-server=utf8mb4_unicode_ci
-      - --skip-character-set-client-handshake
+      POSTGRES_DB: dev
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: devpass
+      POSTGRES_ENCODING: UTF8
+      POSTGRES_COLLATE: en_US.utf8
+      POSTGRES_CTYPE: en_US.utf8
+      POSTGRES_INITDB_ARGS: "--locale=en_US.utf8 --encoding=UTF8"
     volumes:
-      - ./init:/docker-entrypoint-initdb.d
-      - ./db:/var/lib/mysql
+      - ./db_data:/var/lib/postgresql/data
+    user: "${UID:-1000}:${GID:-1000}"
     expose:
       - 3306
     networks:
       default:
         ipv4_address: 172.23.0.6
 
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8790:8080
+    networks:
+      default:
+        ipv4_address: 172.23.0.8
+
   redis:
     image: redis
-    ports:
-      - "6379:6379"
     expose:
       - 6379
     command:

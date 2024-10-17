@@ -28,4 +28,4 @@ test.db
 # Output of the go build command
 tmp
 out/
-db/
+db_data/
