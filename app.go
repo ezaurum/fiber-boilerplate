@@ -28,7 +28,13 @@ func main() {
 	config := configs.New()
 
 	// Connected with database
-	db := database.Connect()
+	db := database.Connect(database.Connection{
+		Host:     config.GetString("DB_HOST"),
+		Port:     config.GetInt("DB_PORT"),
+		User:     config.GetString("DB_USER"),
+		Password: config.GetString("DB_PASS"),
+		Name:     config.GetString("DB_NAME"),
+	})
 
 	// Create fiber app
 	app := fiber.New(fiber.Config{
@@ -41,10 +47,10 @@ func main() {
 	app.Use(cors.New())
 	const HeaderName = "X-CSRF-Token"
 
-	// Initialize redis config
+	// Initialize redis config from .env
 	storage := redis.New(redis.Config{
-		Host:      "172.23.0.79",
-		Port:      6379,
+		Host:      config.GetString("REDIS_HOST"),
+		Port:      config.GetInt("REDIS_PORT"),
 		Username:  "",
 		Password:  "",
 		Database:  0,
@@ -103,6 +109,6 @@ func main() {
 	// Handle not founds
 	app.Use(handlers.NotFound)
 
-	// Listen on port 3000
-	log.Fatal(app.Listen(config.ListenString())) // go run app.go -port=:3000
+	// Listen on
+	log.Fatal(app.Listen(config.ListenString()))
 }

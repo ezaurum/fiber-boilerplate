@@ -3,7 +3,7 @@ package database
 import (
 	"boilerplate/models"
 	"fmt"
-	"gorm.io/driver/sqlite"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
@@ -11,9 +11,24 @@ var (
 	db *gorm.DB
 )
 
+type Connection struct {
+	Host     string
+	Port     int
+	User     string
+	Password string
+	Name     string
+}
+
+func (c Connection) DSN() string {
+	return fmt.Sprintf(
+		"host=%s user=%s password=%s dbname=%s port=%d sslmode=disable",
+		c.Host, c.User, c.Password, c.Name, c.Port,
+	)
+}
+
 // Connect with database
-func Connect() *gorm.DB {
-	_db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+func Connect(c Connection) *gorm.DB {
+	_db, err := gorm.Open(postgres.Open(c.DSN()), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}

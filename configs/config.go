@@ -14,6 +14,13 @@ func New() *Config {
 		Viper: viper.New(),
 	}
 	v.SetDefault("Port", 3000)
+	v.SetDefault("REDIS_HOST", "localhost")
+	v.SetDefault("REDIS_PORT", 6379)
+	v.SetDefault("DB_HOST", "localhost")
+	v.SetDefault("DB_PORT", "localhost")
+	v.SetDefault("DB_NAME", "dev")
+	v.SetDefault("DB_USER", "dev")
+	v.SetDefault("DB_PASS", "devpass")
 	v.SetConfigName(".env")
 	v.SetConfigType("dotenv")
 	v.AddConfigPath(".")
