@@ -42,7 +42,10 @@ func Connect(c Connection) *gorm.DB {
 }
 
 func Insert(user *models.User) {
-	db.Create(user)
+	tx := db.Create(user)
+	if tx.Error != nil {
+		panic(tx.Error)
+	}
 }
 
 func Get() []*models.User {

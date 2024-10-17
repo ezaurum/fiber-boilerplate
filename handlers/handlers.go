@@ -32,6 +32,8 @@ func UserCreate(c *fiber.Ctx) error {
 
 	c.Locals("session").(*session.Session).Set("user", user)
 
+	log.Println("User created:", user.Name)
+
 	return c.JSON(fiber.Map{
 		"success": true,
 		"user":    user,
@@ -71,7 +73,6 @@ func WebSocket(c *websocket.Conn) {
 }
 
 // UserGet returns a user
-// @Version 3.1
 // @Summary Get a user
 // @Description Get a user
 // @Tags users
@@ -84,4 +85,8 @@ func UserGet(ctx *fiber.Ctx) error {
 	data["id"] = ctx.Params("id")
 	data["name"] = "John Doe"
 	return ctx.JSON(data)
+}
+
+func UserDelete(c *fiber.Ctx) error {
+	return c.SendString("User deleted")
 }

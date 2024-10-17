@@ -5,23 +5,19 @@ import (
 	"boilerplate/configs"
 	"boilerplate/database"
 	"boilerplate/handlers"
+	"github.com/gofiber/contrib/swagger"
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/csrf"
+	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/session"
 	"github.com/gofiber/fiber/v2/utils"
-	"github.com/gofiber/swagger"
+	"github.com/gofiber/storage/redis/v3"
 	"log"
 	"runtime"
 	"time"
-
-	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/gofiber/fiber/v2/middleware/logger"
-	"github.com/gofiber/fiber/v2/middleware/recover"
-
-	"github.com/gofiber/storage/redis/v3"
-
-	_ "boilerplate/docs"
 )
 
 func main() {
@@ -45,7 +41,13 @@ func main() {
 	app.Use(recover.New())
 	app.Use(logger.New())
 	app.Use(cors.New())
-	const HeaderName = "X-CSRF-Token"
+	app.Use(swagger.New(
+		swagger.Config{
+			BasePath: "/docs/",
+			Path:     "v1",
+			FilePath: "./docs/swagger.json",
+		},
+	))
 
 	// Initialize redis config from .env
 	storage := redis.New(redis.Config{
@@ -64,12 +66,12 @@ func main() {
 	app.Use(func(c *fiber.Ctx) error {
 		get, err := sessionStore.Get(c)
 		if err != nil {
-			panic(err)
 			return err
 		}
 		c.Locals("session", get)
 		return c.Next()
 	})
+	const HeaderName = "X-CSRF-Token"
 	app.Use(csrf.New(
 		csrf.Config{
 			KeyLookup:         "header:" + HeaderName,
@@ -80,9 +82,6 @@ func main() {
 			CookieHTTPOnly:    true,
 			Expiration:        1 * time.Hour,
 			KeyGenerator:      utils.UUIDv4,
-			ErrorHandler: func(ctx *fiber.Ctx, err error) error {
-				return nil
-			},
 			Extractor:         csrf.CsrfFromHeader(HeaderName),
 			Session:           sessionStore,
 			SessionKey:        "fiber.csrf.token",
@@ -95,8 +94,10 @@ func main() {
 
 	// Bind handlers
 	v1.Get("/users", handlers.UserList)
-	v1.Post("/users", handlers.UserCreate)
-	v1.Delete("/users", authz.RequiresPermissions([]string{"user:create"}), handlers.UserCreate)
+	v1.Post("/users",
+		authz.RequiresPermissions([]string{"user:create"}),
+		handlers.UserCreate)
+	v1.Delete("/users", authz.RequiresPermissions([]string{"user:delete"}), handlers.UserDelete)
 	v1.Get("/users/:id", handlers.UserGet)
 
 	// Setup static files
@@ -105,7 +106,6 @@ func main() {
 	// websocket
 	app.Get("/ws/:id", websocket.New(handlers.WebSocket))
 
-	app.Get("/swagger/*", swagger.HandlerDefault) // default
 	// Handle not founds
 	app.Use(handlers.NotFound)
 
