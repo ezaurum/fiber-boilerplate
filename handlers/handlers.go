@@ -91,6 +91,18 @@ func UserDelete(c *fiber.Ctx) error {
 	return c.SendString("User deleted")
 }
 
+type LoginRequest struct {
+	Email string `json:"email" form:"email"`
+}
+
 func Login(c *fiber.Ctx) error {
-	return c.SendString("Login")
+	var req LoginRequest
+	if err := c.BodyParser(&req); nil != err {
+		return err
+	}
+	user := database.FindByName(req.Email)
+	if nil != user && user.ID != 0 {
+		return c.JSON(user)
+	}
+	return c.SendStatus(fiber.StatusNotFound)
 }

@@ -53,3 +53,12 @@ func Get() []*models.User {
 	db.Find(&users)
 	return users
 }
+
+func FindByName(name string) *models.User {
+	var user models.User
+	row := db.Where("name = ?", name).First(&user)
+	if row.Error != nil {
+		return nil
+	}
+	return &user
+}
