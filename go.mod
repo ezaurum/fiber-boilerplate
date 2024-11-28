@@ -12,6 +12,7 @@ require (
 	github.com/gofiber/contrib/websocket v1.3.2
 	github.com/gofiber/fiber/v2 v2.52.5
 	github.com/gofiber/storage/redis/v3 v3.1.2
+	github.com/gofiber/template/html/v2 v2.1.2
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/viper v1.19.0
 	github.com/swaggo/swag/v2 v2.0.0-rc3
@@ -45,6 +46,8 @@ require (
 	github.com/go-openapi/swag v0.23.0 // indirect
 	github.com/go-openapi/validate v0.24.0 // indirect
 	github.com/go-sql-driver/mysql v1.8.1 // indirect
+	github.com/gofiber/template v1.8.3 // indirect
+	github.com/gofiber/utils v1.1.0 // indirect
 	github.com/golang-sql/civil v0.0.0-20220223132316-b832511892a9 // indirect
 	github.com/golang-sql/sqlexp v0.1.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
