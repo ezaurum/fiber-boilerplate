@@ -90,3 +90,7 @@ func UserGet(ctx *fiber.Ctx) error {
 func UserDelete(c *fiber.Ctx) error {
 	return c.SendString("User deleted")
 }
+
+func Login(c *fiber.Ctx) error {
+	return c.SendString("Login")
+}

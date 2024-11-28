@@ -15,6 +15,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/session"
 	"github.com/gofiber/fiber/v2/utils"
 	"github.com/gofiber/storage/redis/v3"
+	"github.com/gofiber/template/html/v2"
 	"log"
 	"runtime"
 	"time"
@@ -35,6 +36,7 @@ func main() {
 	// Create fiber app
 	app := fiber.New(fiber.Config{
 		Prefork: config.GetBool("PREFORK"), // go run app.go -prod
+		Views:   html.New("./static/private", ".html"),
 	})
 
 	// Middleware
@@ -72,20 +74,36 @@ func main() {
 		return c.Next()
 	})
 	const HeaderName = "X-CSRF-Token"
+	const CookieName = "__Host-csrf_"
 	app.Use(csrf.New(
 		csrf.Config{
 			KeyLookup:         "header:" + HeaderName,
-			CookieName:        "__Host-csrf_",
+			CookieName:        CookieName,
 			CookieSameSite:    "Lax",
 			CookieSecure:      true,
 			CookieSessionOnly: true,
 			CookieHTTPOnly:    true,
 			Expiration:        1 * time.Hour,
 			KeyGenerator:      utils.UUIDv4,
-			Extractor:         csrf.CsrfFromHeader(HeaderName),
+			Extractor: func(c *fiber.Ctx) (string, error) {
+				if s, e := csrf.CsrfFromQuery("_csrf")(c); nil == e {
+					return s, e
+				}
+				if s, e := csrf.CsrfFromParam("_csrf")(c); nil == e {
+					return s, e
+				}
+				if s, e := csrf.CsrfFromHeader(HeaderName)(c); nil == e {
+					return s, e
+				}
+				if s, e := csrf.CsrfFromForm("_csrf")(c); nil == e {
+					return s, e
+				}
+				return csrf.CsrfFromCookie(CookieName)(c)
+			},
 			Session:           sessionStore,
 			SessionKey:        "fiber.csrf.token",
 			HandlerContextKey: "fiber.csrf.handler",
+			ContextKey:        "fiber.csrf.token_string",
 		}))
 
 	authz := auth.CasbinMiddleware(db)
@@ -100,8 +118,17 @@ func main() {
 	v1.Delete("/users", authz.RequiresPermissions([]string{"user:delete"}), handlers.UserDelete)
 	v1.Get("/users/:id", handlers.UserGet)
 
+	v1.Post("/login", handlers.Login)
+
 	// Setup static files
 	app.Static("/", "./static/public")
+
+	app.Get("/login", func(c *fiber.Ctx) error {
+		// 템플릿 렌더링 시 토큰 전달
+		return c.Render("login", fiber.Map{
+			"csrfToken": c.Locals("fiber.csrf.token_string"),
+		})
+	})
 
 	// websocket
 	app.Get("/ws/:id", websocket.New(handlers.WebSocket))
