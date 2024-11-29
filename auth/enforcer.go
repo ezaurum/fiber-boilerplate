@@ -21,16 +21,14 @@ func enforcer(db *gorm.DB) (*casbin.Enforcer, error) {
 	if err := m.LoadModelFromText(casbinModel); nil != err {
 		return nil, err
 	}
-	byDB, err0 := gormadapter.NewAdapterByDB(db)
-	if err0 != nil {
-		log.Fatalf("An error '%s' was not expected when creating a new casbin adapter", err0)
-	}
-	if e, err := casbin.NewEnforcer(); nil != err {
-		return nil, err
-	} else if err = e.InitWithModelAndAdapter(m, byDB); nil != err {
-		return e, err
+	if adp, err0 := gormadapter.NewAdapterByDB(db); nil != err0 {
+		return nil, err0
 	} else {
-		return e, nil
+		if e, err := casbin.NewEnforcer(m, adp); nil != err {
+			return nil, err
+		} else {
+			return e, nil
+		}
 	}
 }
 

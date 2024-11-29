@@ -5,6 +5,7 @@ import (
 	"boilerplate/configs"
 	"boilerplate/database"
 	"boilerplate/handlers"
+	"boilerplate/models"
 	"github.com/gofiber/contrib/swagger"
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
@@ -112,8 +113,24 @@ func main() {
 
 	// Bind handlers
 	v1.Get("/users", handlers.UserList)
-	v1.Post("/users",
-		authz.RequiresPermissions([]string{"user:create"}),
+	v1.Post("/users", func(c *fiber.Ctx) error {
+		s := c.Locals("session")
+		if s == nil {
+			return c.SendStatus(fiber.StatusUnauthorized)
+		}
+		ses := s.(*session.Session)
+		u := ses.Get("user")
+		if u == nil {
+			return c.SendStatus(fiber.StatusUnauthorized)
+		}
+		log.Println(u)
+		user := u.(models.User)
+		if user.Name != "test" {
+			return c.SendStatus(fiber.StatusForbidden)
+		}
+		log.Println("user:", user)
+		return c.Next()
+	},
 		handlers.UserCreate)
 	v1.Delete("/users", authz.RequiresPermissions([]string{"user:delete"}), handlers.UserDelete)
 	v1.Get("/users/:id", handlers.UserGet)

@@ -32,8 +32,6 @@ func UserCreate(c *fiber.Ctx) error {
 	}
 	database.Insert(user)
 
-	c.Locals("session").(*session.Session).Set("user", user)
-
 	log.Println("User created:", user.Name)
 
 	return c.JSON(fiber.Map{
@@ -110,6 +108,7 @@ func Login(c *fiber.Ctx) error {
 	if req.Email == "" {
 		return c.SendStatus(fiber.StatusBadRequest)
 	}
+	s := c.Locals("session").(*session.Session)
 	if req.Email == "test" {
 		user := models.User{
 			Model: models.Model{
@@ -123,7 +122,6 @@ func Login(c *fiber.Ctx) error {
 			Name:  "test",
 			Posts: nil,
 		}
-		s := c.Locals("session").(*session.Session)
 		s.Set("user", &user)
 		if err := s.Save(); nil != err {
 			return err
@@ -132,7 +130,8 @@ func Login(c *fiber.Ctx) error {
 	}
 	user := database.FindByName(req.Email)
 	if nil != user && user.ID != 0 {
-		c.Locals("session").(*session.Session).Set("user", user)
+		s.Set("user", user)
+		_ = s.Save()
 		return c.JSON(user)
 	}
 	return c.SendStatus(fiber.StatusNotFound)
