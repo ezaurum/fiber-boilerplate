@@ -1,7 +1,6 @@
 package main
 
 import (
-	"boilerplate/auth"
 	"boilerplate/configs"
 	"boilerplate/database"
 	"boilerplate/handlers"
@@ -107,7 +106,7 @@ func main() {
 			ContextKey:        "fiber.csrf.token_string",
 		}))
 
-	authz := auth.CasbinMiddleware(db)
+	//authz := auth.CasbinMiddleware(db)
 	// Create a /api/v1 endpoint
 	v1 := app.Group("/api/v1")
 
@@ -123,7 +122,6 @@ func main() {
 		if u == nil {
 			return c.SendStatus(fiber.StatusUnauthorized)
 		}
-		log.Println(u)
 		user := u.(models.User)
 		if user.Name != "test" {
 			return c.SendStatus(fiber.StatusForbidden)
@@ -132,7 +130,7 @@ func main() {
 		return c.Next()
 	},
 		handlers.UserCreate)
-	v1.Delete("/users", authz.RequiresPermissions([]string{"user:delete"}), handlers.UserDelete)
+	v1.Delete("/users", handlers.UserDelete)
 	v1.Get("/users/:id", handlers.UserGet)
 
 	v1.Post("/login", handlers.Login)

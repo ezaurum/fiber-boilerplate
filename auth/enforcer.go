@@ -48,7 +48,7 @@ func CasbinMiddleware(db *gorm.DB) *casbinmiddle.Middleware {
 				if nil == u {
 					return ""
 				}
-				user := u.(*models.User)
+				user := u.(models.User)
 				if user.Name == "test" {
 					return ""
 				}

@@ -122,7 +122,7 @@ func Login(c *fiber.Ctx) error {
 			Name:  "test",
 			Posts: nil,
 		}
-		s.Set("user", &user)
+		s.Set("user", user)
 		if err := s.Save(); nil != err {
 			return err
 		}
@@ -130,7 +130,7 @@ func Login(c *fiber.Ctx) error {
 	}
 	user := database.FindByName(req.Email)
 	if nil != user && user.ID != 0 {
-		s.Set("user", user)
+		s.Set("user", *user)
 		_ = s.Save()
 		return c.JSON(user)
 	}
