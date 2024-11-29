@@ -8,10 +8,10 @@
 
 ## TODO
 - [ ] Excel
-- [ ] Remember me with cookie
+- [x] Remember me with cookie
 - [x] Login with cookie
 - [x] Redis session
-- [ ] Session slide
+- [x] Session slide
 - [x] CSRF
 - [x] CORS
 - [x] Websocket

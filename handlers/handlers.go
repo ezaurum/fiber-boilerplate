@@ -123,6 +123,16 @@ func Login(c *fiber.Ctx) error {
 			Posts: nil,
 		}
 		s.Set("user", user)
+
+		// 쿠키 설정 (암호화된 사용자 ID 저장)
+		c.Cookie(&fiber.Cookie{
+			Name:     "auto_login",                       // 쿠키 이름
+			Value:    "test",                             // 사용자 ID (암호화됨)
+			Expires:  time.Now().Add(7 * 24 * time.Hour), // 7일 동안 유지
+			HTTPOnly: true,                               // JavaScript에서 접근 금지
+			Secure:   false,                              // HTTPS 환경에서는 true로 설정
+		})
+
 		if err := s.Save(); nil != err {
 			return err
 		}
@@ -131,8 +141,32 @@ func Login(c *fiber.Ctx) error {
 	user := database.FindByName(req.Email)
 	if nil != user && user.ID != 0 {
 		s.Set("user", *user)
+		// 쿠키 설정 (암호화된 사용자 ID 저장)
+		c.Cookie(&fiber.Cookie{
+			Name:     "auto_login",                       // 쿠키 이름
+			Value:    user.Name,                          // 사용자 ID (암호화됨)
+			Expires:  time.Now().Add(7 * 24 * time.Hour), // 7일 동안 유지
+			HTTPOnly: true,                               // JavaScript에서 접근 금지
+			Secure:   false,                              // HTTPS 환경에서는 true로 설정
+		})
+
 		_ = s.Save()
 		return c.JSON(user)
 	}
 	return c.SendStatus(fiber.StatusNotFound)
+}
+
+// Logout 로그아웃
+func Logout(c *fiber.Ctx) error {
+	// 쿠키 삭제
+	c.Cookie(&fiber.Cookie{
+		Name:     "auto_login",
+		Expires:  time.Now().Add(-time.Hour), // 과거로 설정하여 삭제
+		HTTPOnly: true,
+		Secure:   false,
+	})
+
+	c.Locals("session").(*session.Session).Destroy()
+
+	return c.JSON(fiber.Map{"message": "Logged out successfully!"})
 }

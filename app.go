@@ -1,6 +1,7 @@
 package main
 
 import (
+	"boilerplate/auth"
 	"boilerplate/configs"
 	"boilerplate/database"
 	"boilerplate/handlers"
@@ -10,6 +11,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/csrf"
+	"github.com/gofiber/fiber/v2/middleware/encryptcookie"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/fiber/v2/middleware/session"
@@ -39,6 +41,13 @@ func main() {
 		Views:   html.New("./static/private", ".html"),
 	})
 
+	// 쿠키 암호화 미들웨어 (보안을 위해 암호화 키 설정)
+	app.Use(encryptcookie.New(encryptcookie.Config{
+		Key: "my-secret-key-32bytes", // 32바이트 비밀 키
+	}))
+
+	sessionExpiration := 30 * time.Minute
+
 	// Middleware
 	app.Use(recover.New())
 	app.Use(logger.New())
@@ -64,14 +73,21 @@ func main() {
 	})
 	sessionStore := session.New(session.Config{
 		Storage:    storage,
-		Expiration: 10 * time.Second,
+		Expiration: sessionExpiration,
 	})
 	app.Use(func(c *fiber.Ctx) error {
 		get, err := sessionStore.Get(c)
 		if err != nil {
 			return err
 		}
+		if get.Fresh() {
+			get.Set("user", models.User{})
+		} else {
+			// 세션 만료 시간 연장
+			get.SetExpiry(sessionExpiration)
+		}
 		c.Locals("session", get)
+		_ = get.Save()
 		return c.Next()
 	})
 	const HeaderName = "X-CSRF-Token"
@@ -107,9 +123,21 @@ func main() {
 			ContextKey:        "fiber.csrf.token_string",
 		}))
 
-	//authz := auth.CasbinMiddleware(db)
+	_ = auth.CasbinMiddleware(db)
 	// Create a /api/v1 endpoint
-	v1 := app.Group("/api/v1")
+	// auto login
+	v1 := app.Group("/api/v1", func(c *fiber.Ctx) error {
+		username := c.Cookies("auto_login")
+		if username != "" {
+			user := database.FindByName(username)
+			if user != nil {
+				s := c.Locals("session").(*session.Session)
+				s.Set("user", *user)
+				_ = s.Save()
+			}
+		}
+		return c.Next()
+	})
 
 	// Bind handlers
 	v1.Get("/users", handlers.UserList)
@@ -135,6 +163,7 @@ func main() {
 	v1.Get("/users/:id", handlers.UserGet)
 
 	v1.Post("/login", handlers.Login)
+	v1.Post("/logout", handlers.Logout)
 
 	// Setup static files
 	app.Static("/", "./static/public")

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"log"
 )
 
 var (
@@ -37,7 +38,7 @@ func Connect(c Connection) *gorm.DB {
 		panic("failed to migrate database")
 	}
 	db = _db
-	fmt.Println("Connected with Database")
+	log.Println("Connected with Database")
 	return db
 }
 
