@@ -3,8 +3,10 @@ package handlers
 import (
 	"boilerplate/database"
 	"boilerplate/models"
+	"encoding/gob"
 	"github.com/gofiber/fiber/v2/middleware/session"
 	"log"
+	"time"
 
 	"github.com/gofiber/contrib/websocket"
 	"github.com/gofiber/fiber/v2"
@@ -91,6 +93,11 @@ func UserDelete(c *fiber.Ctx) error {
 	return c.SendString("User deleted")
 }
 
+func init() {
+	// User 타입 등록
+	gob.Register(models.User{})
+}
+
 type LoginRequest struct {
 	Email string `json:"email" form:"email"`
 }
@@ -100,8 +107,32 @@ func Login(c *fiber.Ctx) error {
 	if err := c.BodyParser(&req); nil != err {
 		return err
 	}
+	if req.Email == "" {
+		return c.SendStatus(fiber.StatusBadRequest)
+	}
+	if req.Email == "test" {
+		user := models.User{
+			Model: models.Model{
+				ID: 0,
+				UpdateModel: models.UpdateModel{
+					CreatedAt: time.Time{},
+					UpdatedAt: time.Time{},
+					DeletedAt: nil,
+				},
+			},
+			Name:  "test",
+			Posts: nil,
+		}
+		s := c.Locals("session").(*session.Session)
+		s.Set("user", &user)
+		if err := s.Save(); nil != err {
+			return err
+		}
+		return c.JSON(user)
+	}
 	user := database.FindByName(req.Email)
 	if nil != user && user.ID != 0 {
+		c.Locals("session").(*session.Session).Set("user", user)
 		return c.JSON(user)
 	}
 	return c.SendStatus(fiber.StatusNotFound)
