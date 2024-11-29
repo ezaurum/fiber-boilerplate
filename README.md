@@ -9,7 +9,7 @@
 ## TODO
 - [ ] Excel
 - [ ] Remember me with cookie
-- [ ] Login with cookie
+- [x] Login with cookie
 - [x] Redis session
 - [ ] Session slide
 - [x] CSRF
@@ -18,7 +18,8 @@
 - [x] OpenAPI
 - [x] ID generator
 - [x] Default database model
-- [ ] Authorization
+- [x] Authorization
+- [ ] Casbin RBAC/ABAC
 
 ## Development
 

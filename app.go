@@ -63,7 +63,8 @@ func main() {
 		PoolSize:  10 * runtime.GOMAXPROCS(0),
 	})
 	sessionStore := session.New(session.Config{
-		Storage: storage,
+		Storage:    storage,
+		Expiration: 10 * time.Second,
 	})
 	app.Use(func(c *fiber.Ctx) error {
 		get, err := sessionStore.Get(c)
